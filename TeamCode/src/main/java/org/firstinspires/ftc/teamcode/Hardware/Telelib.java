@@ -4,5 +4,4 @@ public class Telelib {
     // hannah: intake
     // krish: lift
     // shriya: claw
-    // test
 }
