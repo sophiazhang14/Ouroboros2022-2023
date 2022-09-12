@@ -44,8 +44,6 @@ public class Telelib {
         br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         bl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        linac = hardwareMap.servo.get ("linac");
-
         //in.setDirection(DcMotorSimple.Direction.FORWARD);
         fr.setDirection(DcMotorSimple.Direction.FORWARD);
         fl.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -64,7 +62,17 @@ public class Telelib {
             linac.setPosition(0);
         }
     }
+    public void moveWrist(){
+        double right_trigger = gamepad2.right_trigger;
+        double left_trigger = gamepad2.left_trigger;
 
+        if (right_trigger > 0.5){
+            wrist.setPosition(1);
+        }
+        if (left_trigger > 0.5){
+            wrist.setPosition(0);
+        }
+    }
     public void low_arm(){
         //pid
     }
