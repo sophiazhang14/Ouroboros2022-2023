@@ -49,8 +49,4 @@ public class Lift {
         {
             liftMotor.setPower(idle);
         }
-
-
-    private void resetEncoders() {
-    }
 }
