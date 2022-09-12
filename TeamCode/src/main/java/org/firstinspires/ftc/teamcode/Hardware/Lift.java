@@ -1,5 +1,9 @@
 package org.firstinspires.ftc.teamcode.Hardware;
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
 public class Lift {
     //Knock Knock
     //Who's there?
@@ -12,7 +16,7 @@ public class Lift {
     private LinearOpMode opMode;
     private static double lifting = 1.0;
     private static double idle = 0;
-    public lift(LinearOpMode opMode) {
+    public Lift(LinearOpMode opMode) {
         opMode = this.opMode;
 
         liftMotor = opMode.hardwareMap.dcMotor.get("liftM");
@@ -22,23 +26,31 @@ public class Lift {
         liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
-    public void In (double runTime)
-    {
+    public void in(double runTime) {
         time.reset();
         resetEncoders();
 
+        while (time.seconds() < runTime) {
+            liftMotor.setPower(lifting);
+            liftMotor.setPower(idle);
+
+        }
+    }
+
         public void lift_up()
         {
-            rightS.setPower(lifting);
-            leftS.setPower(lifting);
+            liftMotor.setPower(lifting);
         }
 
         public void lift_off()
         {
-            rightS.setPower(idle);
-            leftS.setPower(idle);
+            liftMotor.setPower(idle);
         }
-        liftMotor.setPower(0);
+
+
+    private void resetEncoders() {
     }
 }

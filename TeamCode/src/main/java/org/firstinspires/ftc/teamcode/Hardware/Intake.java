@@ -71,7 +71,6 @@ public class Intake {
 
         }
 
-             rightS.setPower(0);
-             leftS.setPower(0);
+
     }
 
