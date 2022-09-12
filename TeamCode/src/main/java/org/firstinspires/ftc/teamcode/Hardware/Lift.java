@@ -22,19 +22,11 @@ public class Lift {
         liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
     public void In (double runTime)
     {
         time.reset();
         resetEncoders();
-
-        while(time.seconds() < runTime){
-            liftMotor.setPower(lifting);
-            liftMotor.setPower(idle);
-
-        }
 
         public void lift_up()
         {
