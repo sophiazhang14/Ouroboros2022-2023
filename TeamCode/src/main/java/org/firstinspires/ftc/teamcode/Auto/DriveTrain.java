@@ -26,7 +26,6 @@ public class DriveTrain {
     public void resetEncoders(){
         //how to set power and direction? - sophia
     }
-
     public void encoderMove(double power, double distance, boolean direction, double runtime){
 
         ElapsedTime time = new ElapsedTime();
@@ -59,6 +58,10 @@ public class DriveTrain {
     }
 
     public void turn(){
+
+    }
+
+    public void vision(){
 
     }
 

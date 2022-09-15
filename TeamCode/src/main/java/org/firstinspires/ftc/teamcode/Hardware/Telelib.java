@@ -25,6 +25,8 @@ public class Telelib {
     public Servo linac;
     public Servo wrist;
 
+    public double ugh = 0.5;
+
     public void init() {
         //in = hardwareMap.dcMotor.get("in");
         lArm = hardwareMap.dcMotor.get("lArm");
@@ -49,6 +51,23 @@ public class Telelib {
         fl.setDirection(DcMotorSimple.Direction.FORWARD);
         br.setDirection(DcMotorSimple.Direction.FORWARD);
         bl.setDirection(DcMotorSimple.Direction.FORWARD);
+    }
+
+    public void arcadeDrive(){
+        double left_stick_x = gamepad1.left_stick_x;
+        double left_stick_y = gamepad1.left_stick_y;
+        double right_stick_x = gamepad1.right_stick_x;
+        // ughhhhhh varible???
+        if (left_stick_x > 0.05 || left_stick_x < -0.05 ||
+                left_stick_y > 0.05 || left_stick_y < -0.05 || right_stick_x > 0.05|| right_stick_x < -0.05){
+            fr.setPower(ugh * (left_stick_y + left_stick_x) - right_stick_x);
+            fl.setPower(ugh * (left_stick_y - left_stick_x) + right_stick_x);
+            br.setPower(ugh * (left_stick_y + left_stick_x) + right_stick_x);
+            bl.setPower(ugh * (left_stick_y - left_stick_x) - right_stick_x);
+        }
+        else{
+            kill();
+        }
     }
 
     public void plunger(){
@@ -86,6 +105,12 @@ public class Telelib {
         if (left_stick_x > .5 || left_stick_x < -.5){
             turret.setPower(left_stick_x);
         }
+    }
+    public void kill(){
+        fl.setPower(0);
+        fr.setPower(0);
+        br.setPower(0);
+        bl.setPower(0);
     }
 
     /*public void intake() {
