@@ -8,7 +8,7 @@ public class Lift {
     //Knock Knock
     //Who's there?
     //Why
-    //why?
+    //why who?
     //Why is Krish so cool and whatnot?
     public DcMotor liftMotor;
 
