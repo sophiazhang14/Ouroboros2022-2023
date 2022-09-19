@@ -23,8 +23,8 @@ public class Intake {
         {
             time.reset();
             this.opMode = opMode;
-            rightS = opMode.hardwareMap.dcMotor.get("rightS");
-            leftS = opMode.hardwareMap.dcMotor.get("leftS");
+            rightS = opMode.hardwareMap.dcMotor.get("RIn");
+            leftS = opMode.hardwareMap.dcMotor.get("LIn");
 
             rightS.setDirection(DcMotor.Direction.REVERSE);
             leftS.setDirection(DcMotor.Direction.FORWARD);
@@ -72,5 +72,8 @@ public class Intake {
             leftS.setPower(-PICKUP);
 
         }
+
+             rightS.setPower(0);
+             leftS.setPower(0);
     }
 
