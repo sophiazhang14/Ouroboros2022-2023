@@ -25,7 +25,7 @@ public class Telelib {
     public Servo linac;
     public Servo wrist;
 
-    public double ugh = 0.5;
+    public double ugh = 1;
 
     public void init() {
         //in = hardwareMap.dcMotor.get("in");
@@ -57,9 +57,10 @@ public class Telelib {
         double left_stick_x = gamepad1.left_stick_x;
         double left_stick_y = gamepad1.left_stick_y;
         double right_stick_x = gamepad1.right_stick_x;
+        boolean
         // ughhhhhh varible???
         if (left_stick_x > 0.05 || left_stick_x < -0.05 ||
-                left_stick_y > 0.05 || left_stick_y < -0.05 || right_stick_x > 0.05|| right_stick_x < -0.05){
+                left_stick_y > 0.05 || left_stick_y < -0.05 || right_stick_x > 0.05|| right_stick_x < -0.05 || ){
             fr.setPower(ugh * (left_stick_y + left_stick_x) - right_stick_x);
             fl.setPower(ugh * (left_stick_y - left_stick_x) + right_stick_x);
             br.setPower(ugh * (left_stick_y + left_stick_x) + right_stick_x);
@@ -68,6 +69,7 @@ public class Telelib {
         else{
             kill();
         }
+
     }
 
     public void plunger(){

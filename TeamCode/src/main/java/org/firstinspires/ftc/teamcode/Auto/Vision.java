@@ -20,7 +20,13 @@ import java.util.ArrayList;
 public class Vision {
 
     LinearOpMode opMode;
-    public static final String vuKey = "";
+    public static final String vuKey =
+            "AdzMYbL/////AAABmflzIV+frU0RltL/ML+2uAZXgJiI" +
+            "Werfe92N/AeH7QsWCOQqyKa2G+tUDcgvg8uE8QjHeBZPcpf5hAwlC5qCfvg76eBoaa2b" +
+            "MMZ73hmTiHmr9fj3XmF4LWWZtDC6pWTFrzRAUguhlvgnck6Y4jjM16Px5TqgWYuWnpcxNM" +
+            "HMyOXdnHLlyysyE64PVzoN7hgMXgbi2K8+pmTXvpV2OeLCag8fAj1Tgdm/kKGr0TX86aQsC2" +
+            "RVjToZXr9QyAeyODi4l1KEFmGwxEoteNU8yqNbBGkPXGh/+IIm6/s/KxCJegg8qhxZDgO8110F" +
+            "RzwA5a6EltfxAMmtO0G8BB9SSkApxkcSzpyI0k2LxWof2YZG6x4H";
     public VuforiaLocalizer vuforia;
 
     public Vision(LinearOpMode opMode) {

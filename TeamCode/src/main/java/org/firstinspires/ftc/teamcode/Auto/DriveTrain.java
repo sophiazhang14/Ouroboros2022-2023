@@ -61,10 +61,6 @@ public class DriveTrain {
 
     }
 
-    public void vision(){
-
-    }
-
     public void kill(){
         br.setPower(0);
         bl.setPower(0);
