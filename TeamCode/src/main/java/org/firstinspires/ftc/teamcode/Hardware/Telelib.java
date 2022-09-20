@@ -57,10 +57,19 @@ public class Telelib {
         double left_stick_x = gamepad1.left_stick_x;
         double left_stick_y = gamepad1.left_stick_y;
         double right_stick_x = gamepad1.right_stick_x;
-        boolean
+        boolean half_speed_a = gamepad1.a;
+        boolean index = false;
         // ughhhhhh varible???
+        if (half_speed_a && !index){
+            ugh = .5;
+            index = true;
+        }
+        else if (half_speed_a && index){
+            ugh = 1;
+            index = false;
+        }
         if (left_stick_x > 0.05 || left_stick_x < -0.05 ||
-                left_stick_y > 0.05 || left_stick_y < -0.05 || right_stick_x > 0.05|| right_stick_x < -0.05 || ){
+                left_stick_y > 0.05 || left_stick_y < -0.05 || right_stick_x > 0.05|| right_stick_x < -0.05){
             fr.setPower(ugh * (left_stick_y + left_stick_x) - right_stick_x);
             fl.setPower(ugh * (left_stick_y - left_stick_x) + right_stick_x);
             br.setPower(ugh * (left_stick_y + left_stick_x) + right_stick_x);
