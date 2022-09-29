@@ -1,27 +1,55 @@
 package org.firstinspires.ftc.teamcode.Hardware;
 
+import static com.sun.tools.javac.jvm.ByteCodes.error;
+
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
 public class Turret {
-    public void turnPID (double goal, boolean isRight, double kP, double kI, double kD, double timeOutMS) {
 
-        runtime.reset();
-        sensors.angles = sensors.gyro.getAngularOrientation();
+    LinearOpMode opMode;
+    private DcMotor turret;
 
-        while (opMode.opModeIsActive() && runtime.milliseconds() <= timeOutMS && goal - sensors.getGyroYaw() > 1 ) {
+    public Turret(LinearOpMode opMode1) {
+        opMode = opMode1;
+        turret = opMode.hardwareMap.dcMotor.get("turret");
+    }
 
-            sensors.angles = sensors.gyro.getAngularOrientation();
+    public void positionPID (double goal, double runtime, double kP, double kI, double kD) {
+        /*ElapsedTime time = new ElapsedTime();
+        ElapsedTime smallTime = new ElapsedTime();
+        
+        double error;
+        double lastError = 0;
+        double beforeTime = 0;
+        double p;
+        double i = 0;
+        double d;
 
-            error = goal - sensors.getGyroYaw();
-            proportional = error * kP;
-            time = runtime.milliseconds();
-            integral += ((time - prevTime) * error) * kI;
-            derive = ((error - prevError) / (time - prevTime)) * kD;
-            power = proportional + integral + derive;
+        goal *= (Math.PI/90);
 
-            turn(power, isRight);
+        time.reset();
+        smallTime.reset();
 
-            prevTime = runtime.milliseconds();
-            prevError = goal - sensors.getGyroYaw();
+        while (lastError > 2 && time.seconds() < runtime && opMode.opModeIsActive()){
+            smallTime.reset();
 
+            error = goal - turret.getCurrentPosition();
 
+            p = error * kP;
+            i += (error * (time.seconds() - beforeTime)) * kI;
+            d = ((error - lastError) / smallTime.seconds()) * kD;
+
+            turret.setPower(p + i + d);
+
+            lastError = error;
         }
+        turret.setPower(0);*/
+    }
+
+    public void turnPID(double goal, boolean isRight, double kP, double kI, double kD, double timeOutMS) {
+
+    }
 }
