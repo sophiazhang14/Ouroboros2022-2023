@@ -2,7 +2,15 @@ package org.firstinspires.ftc.teamcode.Hardware;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Servo;
+/*
 
+ Knock Knock
+ Who's there
+ Krish
+ Krish who
+ Krish who is super cool and awesome and amazing
+
+ */
 public class Claw {
 
     public Servo claw;
