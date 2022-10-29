@@ -9,13 +9,14 @@ public class Manipulator {
     public Servo wrist;
     public LinearOpMode opMode;
     public DcMotor highArm;
-    public DcMotor lowArm;
-
+    public DcMotor lowArm1;
+    public DcMotor lowArm2;
     public Manipulator(LinearOpMode opMode) {
         this.opMode = opMode;
         opMode.hardwareMap.servo.get("wrist");
         opMode.hardwareMap.dcMotor.get("highArm");
-        opMode.hardwareMap.dcMotor.get("lowArm");
+        opMode.hardwareMap.dcMotor.get("lowArm1");
+        opMode.hardwareMap.dcMotor.get("lowArm2");
         opMode.telemetry.addLine("claw init");
     }
     public void setWrist(double pos) {

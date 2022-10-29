@@ -9,12 +9,15 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion;
+
 public class Telelib extends OpMode {
     // hannah: intake
     // krish: lift
     // shriya: claw
     //public DcMotor in;
-    public DcMotor lArm;
+    public DcMotor lArm1;
+    public DcMotor lArm2;
     public DcMotor hArm;
     public DcMotor turret;
 
@@ -30,13 +33,15 @@ public class Telelib extends OpMode {
     public double ugh = 0.5;
 
     public void init() {
-        /*lArm = hardwareMap.dcMotor.get("lArm");
+        lArm1 = hardwareMap.dcMotor.get("lArm1");
+        lArm2 = hardwareMap.dcMotor.get("lArm2");
         hArm = hardwareMap.dcMotor.get("hArm");
         turret = hardwareMap.dcMotor.get("turret");*/
         fr = hardwareMap.dcMotor.get("fr");
         fl = hardwareMap.dcMotor.get("fl");
         br = hardwareMap.dcMotor.get("br");
         bl = hardwareMap.dcMotor.get("bl");
+
         //wrist = hardwareMap.servo.get("wrist");
         //twist = hardwareMap.servo.get("twist");
         //claw = hardwareMap.servo.get("claw");
@@ -124,7 +129,14 @@ public class Telelib extends OpMode {
     }
     public void low_arm(){
         //pid
+        double left_stick_y = gamepad2.left_stick_y;
+        if (left_stick_y > .5 || left_stick_y < -.5){
+            lArm1.setPower(gamepad2.left_stick_y);
+            lArm2.setPower(gamepad2.left_stick_y);
+
+        }
     }
+
     public void high_arm(){
         //pid
     }
