@@ -13,7 +13,7 @@ public class DriveTrain {
 
     public LinearOpMode opMode;
 
-    public DriveTrain(LinearOpMode opMode){
+    public DriveTrain(LinearOpMode OpMode){
         this.opMode = opMode;
 
         br = opMode.hardwareMap.dcMotor.get("br");
@@ -47,16 +47,19 @@ public class DriveTrain {
                 fr.setPower(power);
                 fl.setPower(power);
             }
-            else if(strafeRight){
-                br.setPower(power);
-                bl.setPower(-power);
-                fr.setPower(-power);
-                fl.setPower(power);
-            } else {
-                br.setPower(-power);
-                bl.setPower(power);
-                fr.setPower(power);
-                fl.setPower(-power);
+            else{
+                if(strafeRight){
+                    br.setPower(power);
+                    bl.setPower(-power);
+                    fr.setPower(-power);
+                    fl.setPower(power);
+                }
+                else{
+                    br.setPower(-power);
+                    bl.setPower(power);
+                    fr.setPower(power);
+                    fl.setPower(-power);
+                }
             }
         }
         kill();

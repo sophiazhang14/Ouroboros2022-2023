@@ -1,17 +1,20 @@
 package org.firstinspires.ftc.teamcode.Hardware;
 
-public class Teleop {
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
+@TeleOp
+public class Teleop extends Telelib{
 // WHAT DO OVERRIDE DOOOOO??!!!!!
-    Telelib a = new Telelib();
     public void loop() {
 
         // can't just create an object?
-        a.plunger();
-        a.moveWrist();
-        a.arcadeDrive();
-        a.turnTurret();
-        a.high_arm();
-        a.low_arm();
+        //plunger();
+        //moveWrist();
+        arcadeDrive();
+        //turnTurret();
+        //high_arm();
+        //low_arm();
     }
-    public void stop() {a.kill();}//how? why?
+    public void stop() {
+        kill();}//how? why?
 }
