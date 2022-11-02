@@ -9,11 +9,13 @@ public class Teleop extends Telelib{
 
         // can't just create an object?
         //plunger();
-        //moveWrist();
+        moveWrist();
         arcadeDrive();
-        //turnTurret();
-        //high_arm();
-        //low_arm();
+        turnTurret();
+        high_arm();
+        low_arm();
+        claw();
+        twist();
     }
     public void stop() {
         kill();}//how? why?

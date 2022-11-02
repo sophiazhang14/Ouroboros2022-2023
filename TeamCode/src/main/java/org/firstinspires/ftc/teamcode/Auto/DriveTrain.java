@@ -13,7 +13,7 @@ public class DriveTrain {
 
     public LinearOpMode opMode;
 
-    public DriveTrain(LinearOpMode OpMode){
+    public DriveTrain(LinearOpMode opMode){
         this.opMode = opMode;
 
         br = opMode.hardwareMap.dcMotor.get("br");
@@ -24,7 +24,32 @@ public class DriveTrain {
         // how to know what direction and power to reset to? - sophia
     }
     public void resetEncoders(){
+        fl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        fr.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        bl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        br.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        fl.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        fr.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        bl.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        br.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         //how to set power and direction? - sophia
+    }
+    public void moveTest(int seconds){
+        ElapsedTime time = new ElapsedTime();
+        time.reset();
+        while(time.seconds() < seconds) {
+            br.setPower(.5);
+            bl.setPower(.5);
+            fr.setPower(.5);
+            fl.setPower(.5);
+        }
     }
     public void encoderMove(double power, double distance, double runtime, boolean strafe, boolean strafeRight){
 

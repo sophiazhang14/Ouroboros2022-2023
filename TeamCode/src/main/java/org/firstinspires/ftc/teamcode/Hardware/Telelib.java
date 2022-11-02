@@ -16,7 +16,7 @@ public class Telelib extends OpMode {
     // krish: lift
     // shriya: claw
     //public DcMotor in;
-    public DcMotor lArm1;
+    public DcMotor lArm;
     public DcMotor lArm2;
     public DcMotor hArm;
     public DcMotor turret;
@@ -27,26 +27,28 @@ public class Telelib extends OpMode {
     public DcMotor bl;
 
     public Servo claw;
-    public Servo wrist;
+    //public Servo wrist;
     public Servo twist;
 
     public double ugh = 0.5;
 
     public void init() {
-        lArm1 = hardwareMap.dcMotor.get("lArm1");
+        lArm = hardwareMap.dcMotor.get("lArm");
         lArm2 = hardwareMap.dcMotor.get("lArm2");
         hArm = hardwareMap.dcMotor.get("hArm");
-        turret = hardwareMap.dcMotor.get("turret");*/
+        turret = hardwareMap.dcMotor.get("turret");
         fr = hardwareMap.dcMotor.get("fr");
         fl = hardwareMap.dcMotor.get("fl");
         br = hardwareMap.dcMotor.get("br");
         bl = hardwareMap.dcMotor.get("bl");
 
         //wrist = hardwareMap.servo.get("wrist");
-        //twist = hardwareMap.servo.get("twist");
-        //claw = hardwareMap.servo.get("claw");
+        twist = hardwareMap.servo.get("twist");
+        claw = hardwareMap.servo.get("claw");
 
         //in.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        lArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        lArm2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         fr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         fl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -94,13 +96,13 @@ public class Telelib extends OpMode {
     }
 
     public void claw(){
-        boolean left_bumper = gamepad2.right_bumper;
+        boolean left_bumper = gamepad2.left_bumper;
         boolean right_bumper = gamepad2.right_bumper;
 
         if (right_bumper){
             claw.setPosition(1);
         }
-        if(left_bumper){
+        else if(left_bumper){
             claw.setPosition(0);
         }
     }
@@ -109,10 +111,10 @@ public class Telelib extends OpMode {
         double left_trigger = gamepad2.left_trigger;
 
         if (right_trigger > 0.5) {
-            wrist.setPosition(1);
+            //wrist.setPosition(1);
         }
         if (left_trigger > 0.5) {
-            wrist.setPosition(0);
+            //wrist.setPosition(0);
         }
     }
         public void twist(){
@@ -125,27 +127,36 @@ public class Telelib extends OpMode {
             if (right_arrow){
                 twist.setPosition(0);
             }
-
     }
     public void low_arm(){
-        //pid
         double left_stick_y = gamepad2.left_stick_y;
-        if (left_stick_y > .5 || left_stick_y < -.5){
-            lArm1.setPower(gamepad2.left_stick_y);
-            lArm2.setPower(gamepad2.left_stick_y);
-
+        if (left_stick_y > .05 || left_stick_y < -.05){
+            lArm.setPower(gamepad2.left_stick_y * .35);
+            lArm2.setPower(gamepad2.left_stick_y * .35);
+        } else {
+            lArm2.setPower(0);
+            lArm.setPower(0);
         }
     }
 
     public void high_arm(){
-        //pid
+        double right_stick_y = gamepad2.right_stick_y;
+        if (right_stick_y > .05 || right_stick_y < -.05){
+            hArm.setPower(gamepad2.right_stick_y * .5);
+        } else {
+            hArm.setPower(0);
+        }
     }
 
     public void turnTurret(){
         //pid
-        double left_stick_x = gamepad2.left_stick_x;
-        if (left_stick_x > .5 || left_stick_x < -.5){
-            turret.setPower(left_stick_x);
+        double right_trigger = gamepad1.right_trigger;
+        double left_trigger = gamepad1.left_trigger;
+        if (left_trigger > .5){
+            turret.setPower(-1 * left_trigger);
+        }
+        else if (right_trigger > .5){
+            turret.setPower(right_trigger * .25);
         }
     }
     public void kill(){
@@ -154,17 +165,4 @@ public class Telelib extends OpMode {
         br.setPower(0);
         bl.setPower(0);
     }
-
-    /*public void intake() {
-        boolean r_bumper = gamepad2.right_bumper;
-        boolean l_bumper = gamepad2.left_bumper;
-        if (r_bumper) {
-            in.setPower(1);
-        } else if (l_bumper) {
-            in.setPower(-1);
-        } else {
-            in.setPower(0);
-
-        }
-    }*/
 }
