@@ -142,6 +142,27 @@ public class Vision {
         }
         return 3;
     }
+
+    public String visionShriya() throws InterruptedException {
+        Bitmap bitmap = getBitmap();
+        int pix = bitmap.getPixel(bitmap.getWidth()/2, bitmap.getHeight()/2);
+
+        opMode.telemetry.addData("red", red(pix));
+        opMode.telemetry.addData("green", green(pix));
+        opMode.telemetry.addData("green", green(pix));
+        opMode.telemetry.update();
+        opMode.sleep(1000);
+
+        if (red(pix) < 30 && green(pix) < 30 && blue(pix) < 30) {
+            return "black";
+        } else if (red(pix) < 50 && green(pix) > 200 && blue(pix) < 50) {
+            return "green";
+        } else if (red(pix) > 200 && green(pix) < 50 && blue(pix) < 50) {
+            return "red";
+        }
+
+        return "not found";
+    }
     public int senseRed() throws InterruptedException {
         // copy paste
         return 0;
