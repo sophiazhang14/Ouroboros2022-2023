@@ -31,8 +31,14 @@ public class Telelib extends OpMode {
     public Servo twist;
 
     public double ugh = 0.5;
+    boolean lastHold;
+    boolean pastHold1;
+    int hIndex = 1;
 
     public void init() {
+        lastHold = true;
+        pastHold1 = true;
+
         lArm = hardwareMap.dcMotor.get("lArm");
         lArm2 = hardwareMap.dcMotor.get("lArm2");
         hArm = hardwareMap.dcMotor.get("hArm");
@@ -47,6 +53,7 @@ public class Telelib extends OpMode {
         claw = hardwareMap.servo.get("claw");
 
         //in.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        hArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         lArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         lArm2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         fr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -55,6 +62,9 @@ public class Telelib extends OpMode {
         bl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         //in.setDirection(DcMotorSimple.Direction.FORWARD);
+        hArm.setDirection(DcMotorSimple.Direction.REVERSE);
+        lArm.setDirection(DcMotorSimple.Direction.FORWARD);
+        lArm2.setDirection(DcMotorSimple.Direction.FORWARD);
         fr.setDirection(DcMotorSimple.Direction.REVERSE);
         fl.setDirection(DcMotorSimple.Direction.FORWARD);
         br.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -107,8 +117,8 @@ public class Telelib extends OpMode {
         }
     }
     public void moveWrist() {
-        double right_trigger = gamepad2.right_trigger;
-        double left_trigger = gamepad2.left_trigger;
+        double right_trigger = gamepad1.right_trigger;
+        double left_trigger = gamepad1.left_trigger;
 
         if (right_trigger > 0.5) {
             //wrist.setPosition(1);
@@ -130,24 +140,76 @@ public class Telelib extends OpMode {
     }
     public void low_arm(){
         double left_stick_y = gamepad2.left_stick_y;
-        if (left_stick_y > .05 || left_stick_y < -.05){
+        /*if (left_stick_y > .05 || left_stick_y < -.05){
             lArm.setPower(gamepad2.left_stick_y * .35);
             lArm2.setPower(gamepad2.left_stick_y * .35);
         } else {
             lArm2.setPower(0);
             lArm.setPower(0);
+        }*/
+        boolean hold1 = Math.abs(left_stick_y) <= 0.1;
+        lArm.setTargetPosition(lArm.getCurrentPosition());
+        lArm2.setTargetPosition(lArm2.getCurrentPosition());
+        if (hold1) {
+            lArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            lArm2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            lArm.setPower(0.7);
+            lArm2.setPower(0.7);
+            if (!pastHold1) {
+                lArm.setTargetPosition(lArm.getCurrentPosition());
+                lArm2.setTargetPosition(lArm2.getCurrentPosition());
+            }
+        } else {
+            lArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            lArm2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            if (left_stick_y > .1) {
+                lArm.setPower(0.5);
+                lArm2.setPower(0.5);
+            } else {
+                lArm.setPower(-.5);
+                lArm2.setPower(-0.5);
+            }
         }
+        pastHold1 = hold1;
     }
 
-    public void high_arm(){
+    public void high_arm() {
         double right_stick_y = gamepad2.right_stick_y;
-        if (right_stick_y > .05 || right_stick_y < -.05){
+        int position = hArm.getCurrentPosition();
+        hArm.setTargetPosition(position);
+        boolean hold = Math.abs(right_stick_y) <= 0.2;
+        if (hold) {
+            hArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            if(gamepad2.right_trigger > .3){
+                hArm.setPower(-1);
+            }
+            else{
+                hArm.setPower(1);
+            }
+            if (!lastHold) {
+                position = hArm.getCurrentPosition();
+                hArm.setTargetPosition(position);
+            }
+        } else {
+            hArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            if (Math.abs(right_stick_y) > .2) {
+                hArm.setPower(right_stick_y * .3);
+            } /*else {
+                hArm.setPower(right_stick_y * .6);
+            }*/
+        }
+        lastHold = hold;
+        /*if (right_stick_y > .05 || right_stick_y < -.05){
+            hArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             hArm.setPower(gamepad2.right_stick_y * .5);
         } else {
-            hArm.setPower(0);
-        }
+            hArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            hArm.setPower(0.2);
+            if(Math.abs(right_stick_y) < 0.05){
+                hArm.setTargetPosition(hArm.getCurrentPosition());
+            }
+        }*/
     }
-
     public void turnTurret(){
         //pid
         double right_trigger = gamepad1.right_trigger;
