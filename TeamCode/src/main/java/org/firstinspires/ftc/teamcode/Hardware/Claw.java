@@ -21,6 +21,7 @@ public class Claw {
         this.opMode = opMode;
         opMode.hardwareMap.servo.get("claw");
         opMode.hardwareMap.servo.get("wrist");
+        setClaw(false);
         opMode.telemetry.addLine("claw init");
     }
     public void setClaw(boolean isOpen) {

@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.Auto;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class DriveTrain {
@@ -10,6 +12,7 @@ public class DriveTrain {
     public DcMotor bl;
     public DcMotor fr;
     public DcMotor fl;
+    public Servo stop;
 
     public LinearOpMode opMode;
 
@@ -21,6 +24,16 @@ public class DriveTrain {
         fr = opMode.hardwareMap.dcMotor.get("fr");
         fl = opMode.hardwareMap.dcMotor.get("fl");
 
+
+        fr.setDirection(DcMotorSimple.Direction.FORWARD);
+        fl.setDirection(DcMotorSimple.Direction.REVERSE);
+        br.setDirection(DcMotorSimple.Direction.FORWARD);
+        bl.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        fr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        fl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        bl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         // how to know what direction and power to reset to? - sophia
     }
     public void resetEncoders(){
@@ -41,16 +54,14 @@ public class DriveTrain {
         br.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         //how to set power and direction? - sophia
     }
-    public void moveTest(int seconds){
-        ElapsedTime time = new ElapsedTime();
-        time.reset();
-        while(time.seconds() < seconds) {
-            br.setPower(.5);
-            bl.setPower(.5);
-            fr.setPower(.5);
-            fl.setPower(.5);
-        }
+
+    public double getStrafeEncoders(){
+        return Math.abs(-br.getCurrentPosition() + (-fl.getCurrentPosition()) + bl.getCurrentPosition() + fr.getCurrentPosition())/4;
     }
+    public double getEncoders(){
+        return Math.abs((bl.getCurrentPosition() + br.getCurrentPosition() + fl.getCurrentPosition() + fr.getCurrentPosition())/4);
+    }
+
     public void encoderMove(double power, double distance, double runtime, boolean strafe, boolean strafeRight){
 
         ElapsedTime time = new ElapsedTime();
@@ -60,13 +71,17 @@ public class DriveTrain {
         time.reset();
 
         double dis = 0;
-
-        while (time.seconds() < runtime && opMode.opModeIsActive() && dis < distance * (Math.PI/90)){
-            dis = (bl.getCurrentPosition() + br.getCurrentPosition() + fl.getCurrentPosition() + fr.getCurrentPosition())/4;
-            if (!opMode.opModeIsActive())    {
+        while (time.seconds() < runtime && opMode.opModeIsActive() && dis < distance * 105){
+            if(strafe){
+                dis = getStrafeEncoders();
+            }
+            else{
+                dis = getEncoders();
+            }
+            if (!opMode.opModeIsActive()){
                 kill();
             }
-            if (!strafe) {
+            if (!strafe && !strafeRight) {
                 br.setPower(power);
                 bl.setPower(power);
                 fr.setPower(power);
@@ -88,6 +103,10 @@ public class DriveTrain {
             }
         }
         kill();
+        opMode.telemetry.addData("distance", dis);
+        opMode.telemetry.update();
+        opMode.sleep(6000);
+
     }
     public void turnPID(){
 

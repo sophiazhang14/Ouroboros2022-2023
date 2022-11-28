@@ -6,13 +6,13 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.Auto.DriveTrain;
 import org.firstinspires.ftc.teamcode.Auto.Vision;
 
-@Autonomous(group = "testing", name = "CameraVision")
+@Autonomous(group = "testing", name = "VisionTesting")
 public class VisionTesting extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         Vision vision = new Vision(this);
         waitForStart();
-        telemetry.addData("vision: ", vision.visionShriya());
-
+        telemetry.addData("vision: ", vision.senseBlueLeft());
+        telemetry.update();
     }
 }
