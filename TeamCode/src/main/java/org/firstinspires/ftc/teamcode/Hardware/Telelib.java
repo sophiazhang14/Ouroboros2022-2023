@@ -264,8 +264,9 @@ public class Telelib extends OpMode {
             lArm.setPower(.4);
             lArm2.setPower(.4);
             sleep(800);
-            lArm.setPower(-.3);
-            lArm2.setPower(-3);
+            lArm.setPower(-.4);
+            lArm2.setPower(-4);
+            sleep(1000);
 
         }
     });
@@ -275,8 +276,8 @@ public class Telelib extends OpMode {
         public void run() {
             resetEncoders();
             while (lArm2.getCurrentPosition() > -180) {
-                lArm2.setPower(-.6);
-                lArm.setPower(-.6);
+                lArm2.setPower(-.7);
+                lArm.setPower(-.7);
             }
             while (lArm2.getCurrentPosition() > -221) {
                 lArm2.setPower(-.3);
@@ -357,7 +358,10 @@ public class Telelib extends OpMode {
             bl.setPower(ugh * ((left_stick_y + left_stick_x) - right_stick_x));
         }
         else{
-            kill();
+            fl.setPower(0);
+            fr.setPower(0);
+            br.setPower(0);
+            bl.setPower(0);
         }
 
     }
@@ -389,7 +393,7 @@ public class Telelib extends OpMode {
     public void high_arm(){
         if (Math.abs(gamepad2.right_stick_y) > .05) {
             //th_high_arm.queue(high_arm_thread);
-            hArm.setPower(gamepad2.right_stick_y * .6);
+            hArm.setPower(gamepad2.right_stick_y *.6);
         }
         else {
             hArm.setPower(0);
@@ -399,8 +403,8 @@ public class Telelib extends OpMode {
     public void low_arm(){
         if(Math.abs(gamepad2.left_stick_y)> .05){
             //th_low_arm.queue(low_arm_thread);
-            lArm.setPower(gamepad2.left_stick_y * .5);
-            lArm2.setPower(gamepad2.left_stick_y * .5);
+            lArm.setPower(gamepad2.left_stick_y *.7);
+            lArm2.setPower(gamepad2.left_stick_y *.7);
             noarmpower = true;
 
         } else if (noarmpower){
@@ -435,6 +439,9 @@ public class Telelib extends OpMode {
         fr.setPower(0);
         br.setPower(0);
         bl.setPower(0);
+        lArm.setPower(0);
+        lArm2.setPower(0);
+        hArm.setPower(0);
     }
 
     public void telemetry() {
@@ -458,6 +465,7 @@ public class Telelib extends OpMode {
         telemetry.addData("fr: ", fr.getPower());
         telemetry.addData("bl: ", bl.getPower());
         telemetry.addData("br: ", br.getPower());
+        telemetry.addData("halfSpeed: ", ugh == .2);
 
     }
 }

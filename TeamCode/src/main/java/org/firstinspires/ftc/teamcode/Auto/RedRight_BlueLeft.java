@@ -2,16 +2,9 @@ package org.firstinspires.ftc.teamcode.Auto;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.vuforia.PIXEL_FORMAT;
 
-import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-
-import org.firstinspires.ftc.teamcode.Hardware.Claw;
-import org.firstinspires.ftc.teamcode.Hardware.Manipulator;
-import org.firstinspires.ftc.teamcode.Hardware.Turret;
-
-@Autonomous(group = "auto", name = "BlueRight")
-public class BlueRight extends LinearOpMode {
+@Autonomous(group = "auto", name = "RedRight_BlueLeft")
+public class RedRight_BlueLeft extends LinearOpMode {
     @Override
 
     public void runOpMode() throws InterruptedException {
@@ -25,21 +18,15 @@ public class BlueRight extends LinearOpMode {
 
         waitForStart();
 
-       if(vis.senseBlueLeft() == 1){
-           dt.encoderMove(.5,11, 5, true, true);
+       if(vis.senseBlueLeft() == 3){
+           dt.encoderMove(.5,10, 5, true, true);
            dt.encoderMove(.5, 12, 3, false, false);
             }
         else if(vis.senseBlueLeft() == 2){
-           dt.encoderMove(.5,11, 5, true, true);
-           dt.encoderMove(.5,11, 5, true, false);
-           dt.encoderMove(-.5,2,3,false,false);
-           dt.encoderMove(.5, .5, 3, true, false);
+           dt.encoderMove(.5, 1, 3, true, false);
            dt.encoderMove(.5, 12, 3, false, false);
         }  else{
-           dt.encoderMove(.5,11, 5, true, true);
-           dt.encoderMove(.5,11, 5, true, false);
-           dt.encoderMove(-.5,2,3,false,false);
-           dt.encoderMove(.5, 13, 3, true, false);
+           dt.encoderMove(.5, 14.5, 3, true, false);
            dt.encoderMove(.5, 12, 3, false, false);
         }
 

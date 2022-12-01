@@ -145,16 +145,25 @@ public class Vision {
         yAverage = total/elementY.size();
 
         if (yAverage < 40) {
+            opMode.telemetry.addData("return", "one");
+            opMode.telemetry.update();
+            opMode.sleep(2000);
             location = 1;
         } else if (yAverage < 90 && yAverage > 40) {
+            opMode.telemetry.addData("return", "two");
+            opMode.telemetry.update();
+            opMode.sleep(2000);
             location = 2;
         } else if (yAverage > 90) {
+            opMode.telemetry.addData("return", "three");
+            opMode.telemetry.update();
+            opMode.sleep(2000);
             location = 3;
         }
 
-        opMode.telemetry.addData("Position", location);
-        opMode.telemetry.addData("y avg", yAverage);
-        opMode.telemetry.update();
+        //opMode.telemetry.addData("Position", location);
+        //opMode.telemetry.addData("y avg", yAverage);
+        //opMode.telemetry.update();
 
         opMode.sleep(1000);
 

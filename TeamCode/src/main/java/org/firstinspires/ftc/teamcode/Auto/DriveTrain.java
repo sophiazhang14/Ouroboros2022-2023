@@ -103,17 +103,33 @@ public class DriveTrain {
             }
         }
         kill();
-        opMode.telemetry.addData("distance", dis);
-        opMode.telemetry.update();
-        opMode.sleep(6000);
+        //opMode.telemetry.addData("distance", dis);
+        //opMode.telemetry.update();
+        opMode.sleep(300);
 
     }
     public void turnPID(){
 
     }
 
-    public void turn(){
+    public void turn(boolean turnRight, double timeSec){
+        ElapsedTime time = new ElapsedTime();
+        time.reset();
 
+        while(time.seconds() < timeSec) {
+
+            if (turnRight) {
+                fl.setPower(.4);
+                bl.setPower(.3);
+                fr.setPower(-.3);
+                br.setPower(-.2);
+            } else {
+                fr.setPower(.4);
+                br.setPower(.3);
+                fl.setPower(-.3);
+                bl.setPower(-.2);
+            }
+        }
     }
 
     public void kill(){
