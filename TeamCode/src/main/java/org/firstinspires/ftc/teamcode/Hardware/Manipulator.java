@@ -1,32 +1,74 @@
 package org.firstinspires.ftc.teamcode.Hardware;
 
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class Manipulator {
     public Servo wrist;
+    public Servo claw;
     public LinearOpMode opMode;
-    public DcMotor highArm;
-    public DcMotor lowArm1;
-    public DcMotor lowArm2;
+    public DcMotor hArm;
+    public DcMotor lArm;
+    public DcMotor lArm2;
+    public DcMotor turret;
     public double acceleration;
     public double velocity;
 
     public Manipulator(LinearOpMode opMode) {
         this.opMode = opMode;
-        opMode.hardwareMap.servo.get("wrist");
-        opMode.hardwareMap.dcMotor.get("highArm");
-        opMode.hardwareMap.dcMotor.get("lowArm1");
-        opMode.hardwareMap.dcMotor.get("lowArm2");
+        lArm = opMode.hardwareMap.dcMotor.get("lArm");
+        lArm2 = opMode.hardwareMap.dcMotor.get("lArm2");
+        hArm = opMode.hardwareMap.dcMotor.get("hArm");
+        claw = opMode.hardwareMap.servo.get("claw");
+        wrist = opMode.hardwareMap.servo.get("wrist");
         opMode.telemetry.addLine("claw init");
+
+
+        lArm2.setDirection(DcMotorSimple.Direction.FORWARD);
+        hArm.setDirection(DcMotorSimple.Direction.REVERSE);
+        lArm.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        hArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        lArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        lArm2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+       // opMode.telemetry.addLine(lArm.toString());
+    //    opMode.telemetry.addLine(lArm2.toString());
+      //  opMode.telemetry.addLine(hArm.toString());
+       // opMode.telemetry.update();
+
     }
-    public void setWrist(double pos) {
+
+    public void resetEncoders(){
+        lArm.setMode(DcMotor.RunMode.RESET_ENCODERS);
+
+        lArm2.setMode(DcMotor.RunMode.RESET_ENCODERS);
+
+        hArm.setMode(DcMotor.RunMode.RESET_ENCODERS);
+
+        hArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        lArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        lArm2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    }
+
+    public void setClaw(double pos){
         wrist.setPosition(pos);
     }
-    public double feedForward(double positionDeg, double velocityEncPerSec, double accelEncPerSecSquared, double ks, double kcos, double kv, double ka) {
-        double rad = positionDeg * (Math.PI/180);
+    public void setWrist(double pos) {
+        claw.setPosition(pos);
+    }
+    public double feedForward(double positionEnc, double velocityEncPerSec, double accelEncPerSecSquared, double ks, double kcos, double kv, double ka) {
+        //double rad = positionDeg * (Math.PI/180);
+        double rad = positionEnc *(360/1000); //1000 is the place holder for the number of encoder ticks per rev
+                                                // after divide until its __ number of degrees per encoder tick
         return ks * Math.signum(velocityEncPerSec)
                 + kcos * Math.cos(rad)
                 + kv * velocityEncPerSec
@@ -35,7 +77,8 @@ public class Manipulator {
 
     public void highPositionPID (double position, double cap, double timeOut, double kP, double kI, double kD){
         ElapsedTime time = new ElapsedTime();
-        double power;
+        double RADIANS_AT_START = 0 * (Math.PI/180); // zero is place holder for the angle in degrees at the starting pos of hArm
+        double power = 0;
         double p = 0;
         double i = 0;
         double d = 0;
@@ -47,9 +90,21 @@ public class Manipulator {
         double pos = 0;
         double lastV = 0;
 
-        while (Math.abs(highArm.getCurrentPosition() - position) > 0.2 && time.seconds() < timeOut){
+        resetEncoders();
+        double diff = Math.abs(-hArm.getCurrentPosition() - position);
+        time.reset();
+        while (Math.abs(-hArm.getCurrentPosition() - position) > 2 && time.seconds() < timeOut){
+            opMode.telemetry.addData("p :: ", p *kP);
+            opMode.telemetry.addData("i :: ", i * kI);
+            opMode.telemetry.addData("d :: ", d * kD);
+            opMode.telemetry.addData("time", time.seconds());
+            opMode.telemetry.addData("encoder diff", Math.abs(hArm.getCurrentPosition()) - position);
+            opMode.telemetry.addData("encoder", -hArm.getCurrentPosition());
+            opMode.telemetry.addData("encoder desired", position);
+            opMode.telemetry.addData("power", power);
+            opMode.telemetry.update();
             changeT = time.seconds() - prevT;
-            p = highArm.getCurrentPosition() - position;
+            p = hArm.getCurrentPosition() - position;
             i = prevI + p * changeT;
             d = (p - prevP)/changeT;
 
@@ -66,13 +121,13 @@ public class Manipulator {
             if (Math.abs(power) > cap){
                 power = Math.signum(power) * cap;
             }
-            pos = highArm.getCurrentPosition() - pos;
+            pos = hArm.getCurrentPosition() - pos;
             velocity = pos/changeT;
             acceleration = (velocity * velocity - lastV * lastV)/(2 * pos);
             lastV = velocity;
-            highArm.setPower(power + feedForward(0, velocity, acceleration, 0, 0, 0, 0));
+            hArm.setPower(power);// + feedForward(0, velocity, acceleration, 0, 0, 0, 0));
         }
-        highArm.setPower(0);
+        hArm.setPower(0);
     }
     public void lowPositionPID (double position, double cap, double timeOut, double kP, double kI, double kD){
         ElapsedTime time = new ElapsedTime();
@@ -87,12 +142,13 @@ public class Manipulator {
         double prevT = 0;
         double pos = 0;
         double lastV = 0;
-
-        while (Math.abs(lowArm1.getCurrentPosition()) - position > 0.2 && time.seconds() < timeOut){
+        resetEncoders();
+        time.reset();
+        while (Math.abs(-lArm.getCurrentPosition() - position) > 1 && time.seconds() < timeOut) {
             changeT = time.seconds() - prevT;
-            p = lowArm1.getCurrentPosition() - position;
+            p = lArm.getCurrentPosition() - position;
             i = prevI + p * changeT;
-            d = (p - prevP)/changeT;
+            d = (p - prevP) / changeT;
 
             prevP = p;
             prevI = i;
@@ -100,21 +156,34 @@ public class Manipulator {
 
             power = p * kP + i * kI + d * kD;
 
-            if(Math.abs(p) > 0.1){
+            if (Math.abs(p) > 0.1) {
                 prevI = 0;
             } // why need????
 
-            if (Math.abs(power) > cap){
+            if (Math.abs(power) > cap) {
                 power = Math.signum(power) * cap;
             }
-            pos = lowArm1.getCurrentPosition() - pos;
-            velocity = pos/changeT;
-            acceleration = (velocity * velocity - lastV * lastV)/(2 * pos);
+            pos = lArm.getCurrentPosition() - pos;
+            velocity = pos / changeT;
+            acceleration = (velocity * velocity - lastV * lastV) / (2 * pos);
             lastV = velocity;
-            lowArm1.setPower(power + feedForward(0, velocity, acceleration, 0, 0, 0, 0));
-            lowArm2.setPower(power + feedForward(0, velocity, acceleration, 0, 0, 0, 0));
+            lArm.setPower(power /*+ feedForward(0, velocity, acceleration, 0, 0, 0, 0)*/);
+            lArm2.setPower(power /*+ feedForward(0, velocity, acceleration, 0, 0, 0, 0)*/);
+            opMode.telemetry.addData("time", time.seconds());
+            opMode.telemetry.addData("encoder diff", Math.abs(Math.abs(lArm.getCurrentPosition()) - position));
+            opMode.telemetry.addData("encoder", lArm.getCurrentPosition());
+            opMode.telemetry.addData("power", power);
+            opMode.telemetry.update();
         }
-        lowArm1.setPower(0);
-        lowArm1.setPower(0);
+        lArm.setPower(0);
+        lArm2.setPower(0);
+    }
+
+    public void moveLArm(double power){
+        lArm.setPower(power);
+        lArm2.setPower(power);
+    }
+    public void moveHArm(double power){
+        hArm.setPower(power);
     }
 }

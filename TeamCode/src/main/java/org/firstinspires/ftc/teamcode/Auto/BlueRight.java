@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.vuforia.PIXEL_FORMAT;
 
+import org.firstinspires.ftc.teamcode.ThreadHandler;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 import org.firstinspires.ftc.teamcode.Hardware.Claw;
@@ -18,6 +19,7 @@ public class BlueRight extends LinearOpMode {
         //Claw claw = new Claw(this);
         //Manipulator manipulator = new Manipulator(this);
         //Turret turret = new Turret(this);
+
         DriveTrain dt = new DriveTrain(this);
         Vision vis = new Vision(this);
 
@@ -25,7 +27,8 @@ public class BlueRight extends LinearOpMode {
 
         waitForStart();
 
-       if(vis.senseBlueLeft() == 1){
+
+       if(vis.senseBlueLeft() == 3){
            dt.encoderMove(.5,11, 5, true, true);
            dt.encoderMove(.5, 12, 3, false, false);
             }

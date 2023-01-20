@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Hardware;
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gamepad1;
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gamepad2;
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.linearOpMode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -34,13 +35,14 @@ public class Telelib extends OpMode {
     public Servo claw;
     public Servo stop;
 
+    private boolean e = true;
+    private boolean tfwrist = true;
     public double ugh = .75;
-    boolean lastHold;
-    boolean pastHold1;
+    private boolean lastHold;
+    private boolean pastHold1;
     int hIndex = 1;
-
-    boolean halfToggle;
-    double half;
+    private boolean halfToggle;
+    private double half;
 
     ThreadHandler th_wrist;
     ThreadHandler th_claw;
@@ -58,6 +60,7 @@ public class Telelib extends OpMode {
 
         lastHold = true;
         pastHold1 = true;
+
 
         lArm = hardwareMap.dcMotor.get("lArm");
         lArm2 = hardwareMap.dcMotor.get("lArm2");
@@ -162,9 +165,10 @@ public class Telelib extends OpMode {
         public void run() {
             ElapsedTime time = new ElapsedTime();
             time.reset();
-            while (time.milliseconds() < 100) {
+            while (time.milliseconds() < 10) {
             }
-            wrist.setPosition(.95);
+            wrist.setPosition(1);
+            //.5
             sleep(700);
         }
     });
@@ -173,9 +177,10 @@ public class Telelib extends OpMode {
         public void run() {
             ElapsedTime time = new ElapsedTime();
             time.reset();
-            while (time.milliseconds() < 100) {
+            while (time.milliseconds() < 10) {
             }
-            wrist.setPosition(.5);
+            wrist.setPosition(0.5);
+            //1
             sleep(700);
         }
     });
@@ -187,7 +192,7 @@ public class Telelib extends OpMode {
             time.reset();
             while (time.milliseconds() < 350) {
             }
-            claw.setPosition(.9);
+            claw.setPosition(.5); //.65
             sleep(700);
         }
     });
@@ -211,7 +216,7 @@ public class Telelib extends OpMode {
             time.reset();
             while (time.milliseconds() < 350) {
             }
-            claw.setPosition(0);
+            claw.setPosition(0); //.3
             sleep(700);
         }
     });
@@ -263,9 +268,9 @@ public class Telelib extends OpMode {
         public void run() {
             lArm.setPower(.4);
             lArm2.setPower(.4);
-            sleep(800);
-            lArm.setPower(-.4);
-            lArm2.setPower(-4);
+            sleep(200);
+            lArm.setPower(-.6);
+            lArm2.setPower(-.6);
             sleep(1000);
 
         }
@@ -276,19 +281,19 @@ public class Telelib extends OpMode {
         public void run() {
             resetEncoders();
             while (lArm2.getCurrentPosition() > -180) {
-                lArm2.setPower(-.7);
-                lArm.setPower(-.7);
+                lArm2.setPower(-.8);
+                lArm.setPower(-.8);
             }
-            while (lArm2.getCurrentPosition() > -221) {
-                lArm2.setPower(-.3);
-                lArm.setPower(-.3);
+            while (lArm2.getCurrentPosition() > -210) {
+                lArm2.setPower(-.4);
+                lArm.setPower(-.4);
             }
             while (hArm.getCurrentPosition() > 150 || hArm.getCurrentPosition() < 130) {
                 lArm.setPower(-.5);
                 if (hArm.getCurrentPosition() < 130) {
-                    hArm.setPower(.2);
+                    hArm.setPower(.3);
                 } else if (hArm.getCurrentPosition() > 150) {
-                    hArm.setPower(-.2);
+                    hArm.setPower(-.3);
                 }
 
             }
@@ -368,32 +373,34 @@ public class Telelib extends OpMode {
 
     public void claw(){
         boolean right_bumper = gamepad2.right_bumper;
-        boolean left_bumper = gamepad2.left_bumper;
 
-        if(right_bumper){
+        if(right_bumper && e){
             th_claw.queue(claw_open_thread);
+            e = false;
         }
-        else if (left_bumper){
+        else if (right_bumper && !e){
             th_claw.queue(claw_close_thread);
+            e = true;
         }
     }
 
     public void wrist(){
-        double right_trigger = gamepad2.right_trigger;
-        double left_trigger = gamepad2.left_trigger;
+        boolean left_bumper = gamepad2.left_bumper;
 
-        if(right_trigger > .1){
+        if(left_bumper && tfwrist){
             th_wrist.queue(wrist_open_thread);
+            tfwrist = false;
         }
-        else if(left_trigger > .1){
+        else if(!left_bumper && !tfwrist){
             th_wrist.queue(wrist_close_thread);
+            tfwrist = true;
         }
     }
 
     public void high_arm(){
         if (Math.abs(gamepad2.right_stick_y) > .05) {
             //th_high_arm.queue(high_arm_thread);
-            hArm.setPower(gamepad2.right_stick_y *.6);
+            hArm.setPower(gamepad2.right_stick_y *.5);
         }
         else {
             hArm.setPower(0);
@@ -424,16 +431,19 @@ public class Telelib extends OpMode {
     }
 
     public void turnTurret(){
-        //pid
-        double right_trigger = gamepad1.right_trigger;
-        double left_trigger = gamepad1.left_trigger;
-        if (left_trigger > .5){
-            turret.setPower(-1 * left_trigger);
+        double left_stick_x = gamepad2.left_stick_x;
+        if (left_stick_x > .5) {
+            turret.setPower(-.25);
         }
-        else if (right_trigger > .5){
-            turret.setPower(right_trigger * .25);
+        else if (left_stick_x < -.5){
+            turret.setPower(.25);
+        }
+        else
+        {
+            turret.setPower(0);
         }
     }
+
     public void kill(){
         fl.setPower(0);
         fr.setPower(0);

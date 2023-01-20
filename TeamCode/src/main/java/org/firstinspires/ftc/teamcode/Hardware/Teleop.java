@@ -9,7 +9,7 @@ public class Teleop extends Telelib{
 
         // can't just create an object?
         //plunger();
-        //turnTurret();
+        turnTurret();
         high_arm();
         low_arm();
         wrist();

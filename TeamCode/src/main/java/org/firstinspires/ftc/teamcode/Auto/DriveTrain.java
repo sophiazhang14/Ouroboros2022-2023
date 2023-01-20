@@ -12,6 +12,7 @@ public class DriveTrain {
     public DcMotor bl;
     public DcMotor fr;
     public DcMotor fl;
+    public DcMotor turret;
     public Servo stop;
 
     public LinearOpMode opMode;
@@ -23,6 +24,7 @@ public class DriveTrain {
         bl = opMode.hardwareMap.dcMotor.get("bl");
         fr = opMode.hardwareMap.dcMotor.get("fr");
         fl = opMode.hardwareMap.dcMotor.get("fl");
+        turret = opMode.hardwareMap.dcMotor.get("turret");
 
 
         fr.setDirection(DcMotorSimple.Direction.FORWARD);

@@ -38,7 +38,7 @@ public class Vision {
 
     public Vision(LinearOpMode opMode) {
         this.opMode = opMode;
-
+        //stop.setPosition(1);
         // variable allows image to show up on robot controller phone
         int cameraMonitorViewId = opMode.hardwareMap.appContext.getResources()
                 .getIdentifier("cameraMonitorViewId", "id",
@@ -93,12 +93,12 @@ public class Vision {
 
         frame.close();
 
-        opMode.telemetry.addLine("Got Bitmap");
-        opMode.telemetry.addData("width", rgb.getWidth());
-        opMode.telemetry.addData("height", rgb.getHeight());
-        opMode.telemetry.update();
+        //opMode.telemetry.addLine("Got Bitmap");
+        //opMode.telemetry.addData("width", rgb.getWidth());
+        //opMode.telemetry.addData("height", rgb.getHeight());
+        //opMode.telemetry.update();
 
-        opMode.sleep(500);
+        //opMode.sleep(500);
 
         return bm;
     }
