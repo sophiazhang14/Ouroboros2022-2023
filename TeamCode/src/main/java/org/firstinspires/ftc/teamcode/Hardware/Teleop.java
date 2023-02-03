@@ -16,6 +16,7 @@ public class Teleop extends Telelib{
         claw();
         arcadeDrive();
         telemetry();
+        stopper();
     }
     public void stop() {
         kill();}//how? why?

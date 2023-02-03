@@ -35,8 +35,8 @@ public class Telelib extends OpMode {
     public Servo claw;
     public Servo stop;
 
-    private boolean e = true;
-    private boolean tfwrist = true;
+    private double e = 0;
+    private int tfwrist = 0;
     public double ugh = .75;
     private boolean lastHold;
     private boolean pastHold1;
@@ -64,6 +64,7 @@ public class Telelib extends OpMode {
 
         lArm = hardwareMap.dcMotor.get("lArm");
         lArm2 = hardwareMap.dcMotor.get("lArm2");
+
         hArm = hardwareMap.dcMotor.get("hArm");
         turret = hardwareMap.dcMotor.get("turret");
         fr = hardwareMap.dcMotor.get("fr");
@@ -165,10 +166,11 @@ public class Telelib extends OpMode {
         public void run() {
             ElapsedTime time = new ElapsedTime();
             time.reset();
-            while (time.milliseconds() < 10) {
+            while (time.milliseconds() < 100) {
             }
             wrist.setPosition(1);
-            //.5
+
+            //1
             sleep(700);
         }
     });
@@ -177,10 +179,11 @@ public class Telelib extends OpMode {
         public void run() {
             ElapsedTime time = new ElapsedTime();
             time.reset();
-            while (time.milliseconds() < 10) {
+            while (time.milliseconds() < 100) {
             }
             wrist.setPosition(0.5);
-            //1
+
+            //.5
             sleep(700);
         }
     });
@@ -190,9 +193,10 @@ public class Telelib extends OpMode {
         public void run() {
             ElapsedTime time = new ElapsedTime();
             time.reset();
-            while (time.milliseconds() < 350) {
+            while (time.milliseconds() < 100) {
             }
-            claw.setPosition(.5); //.65
+            claw.setPosition(.5);
+             //.5
             sleep(700);
         }
     });
@@ -214,9 +218,10 @@ public class Telelib extends OpMode {
         public void run() {
             ElapsedTime time = new ElapsedTime();
             time.reset();
-            while (time.milliseconds() < 350) {
+            while (time.milliseconds() < 100) {
             }
-            claw.setPosition(0); //.3
+            claw.setPosition(0);
+             //0
             sleep(700);
         }
     });
@@ -370,30 +375,42 @@ public class Telelib extends OpMode {
         }
 
     }
-
+    public void stopper(){
+        boolean a_button = gamepad2.a;
+        boolean b = gamepad2.b;
+        if(a_button){
+            stop.setPosition(1);
+        }
+        else if (b)
+        {
+            stop.setPosition(0);
+        }
+    }
     public void claw(){
         boolean right_bumper = gamepad2.right_bumper;
+        boolean left_bumper = gamepad2.left_bumper;
 
-        if(right_bumper && e){
+        if(right_bumper){
             th_claw.queue(claw_open_thread);
-            e = false;
+            e += 1;
         }
-        else if (right_bumper && !e){
+        else if (left_bumper){
             th_claw.queue(claw_close_thread);
-            e = true;
+            e += 1;
         }
     }
 
     public void wrist(){
-        boolean left_bumper = gamepad2.left_bumper;
+        double left_trigger = gamepad2.left_trigger;
+        double right_trigger = gamepad2.right_trigger;
 
-        if(left_bumper && tfwrist){
+        if(left_trigger > .3){
             th_wrist.queue(wrist_open_thread);
-            tfwrist = false;
+            tfwrist += 1;
         }
-        else if(!left_bumper && !tfwrist){
+        else if(right_trigger > .3){
             th_wrist.queue(wrist_close_thread);
-            tfwrist = true;
+            tfwrist += 1;
         }
     }
 
@@ -431,12 +448,13 @@ public class Telelib extends OpMode {
     }
 
     public void turnTurret(){
-        double left_stick_x = gamepad2.left_stick_x;
+        double left_stick_x = gamepad2.right_stick_x;
+        double right_trigger = gamepad2.right_stick_x;
         if (left_stick_x > .5) {
-            turret.setPower(-.25);
+            turret.setPower(.4);
         }
-        else if (left_stick_x < -.5){
-            turret.setPower(.25);
+        else if (right_trigger <  -.5){
+            turret.setPower(-.4);
         }
         else
         {
@@ -476,6 +494,8 @@ public class Telelib extends OpMode {
         telemetry.addData("bl: ", bl.getPower());
         telemetry.addData("br: ", br.getPower());
         telemetry.addData("halfSpeed: ", ugh == .2);
+        telemetry.addData("stop: ", stop.getPosition());
+        telemetry.addLine();
 
     }
 }

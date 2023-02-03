@@ -2,9 +2,6 @@ package org.firstinspires.ftc.teamcode.Auto.Testing;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-
 
 import org.firstinspires.ftc.teamcode.Auto.DriveTrain;
 import org.firstinspires.ftc.teamcode.Auto.Vision;
@@ -12,8 +9,8 @@ import org.firstinspires.ftc.teamcode.Hardware.Manipulator;
 import org.firstinspires.ftc.teamcode.Hardware.Turret;
 import org.firstinspires.ftc.teamcode.Loop;
 
-@Autonomous(group = "auto", name = "ArmAuto")
-public class ArmAuto extends LinearOpMode{
+@Autonomous(group = "auto", name = "ArmAuto_Red_Right_Face")
+public class ArmAuto_Red_Right_Face extends LinearOpMode{
     Manipulator manip_thd;
     DriveTrain dt;
     Vision vis;
@@ -60,7 +57,6 @@ public class ArmAuto extends LinearOpMode{
         @Override
         public void run() {
             manip_thd.setWrist(.5);
-            ;
         }});
    Thread thd_turret_hold = new Thread(new Runnable(){
         @Override
@@ -74,7 +70,6 @@ public class ArmAuto extends LinearOpMode{
     Loop loop_open = new Loop();
     Loop loop_close = new Loop();
     Loop loop_wrist = new Loop();
-    Loop loop_turret_hold = new Loop();
 
 
     @Override
@@ -86,27 +81,19 @@ public class ArmAuto extends LinearOpMode{
         //Turret turret = new Turret(this);
         dt = new DriveTrain(this);
         vis = new Vision(this);
-        turret = new Turret(this);
         //dt.encoderMove(.5, 3, 3, false, false);
         loop_hold.add(hold_hArm);
         loop_lHold.add(hold_lArm);
         loop_open.add(thd_open_claw);
         loop_close.add(thd_close_claw);
         loop_wrist.add(thd_wrist_parallel);
-        loop_turret_hold.add(thd_turret_hold);
 
         waitForStart();
 
         loop_close.run();
         int sense = vis.senseBlueLeft();
-        manip_thd.setSize(1);
         manip_thd.setSize(0);
-
-
-
-        turret.moveTurret(.1);
-        loop_turret_hold.run();
-
+        manip_thd.setSize(1);
 
         dt.encoderMove(.5, 8, 2, false, false);
 
@@ -127,15 +114,14 @@ public class ArmAuto extends LinearOpMode{
         manip_thd.setClaw(.5);
         manip_thd.setWrist(0);
 
-        //dt.encoderMove(.5,-2,3,false,false);
-
         // move arm back up
-        manip_thd.highPositionPID(200, 1, 3, .0009, .00001, .001);
-        manip_thd.highPositionPID(200, 1, 2, .0009, .00001, .001);
+        manip_thd.highPositionPID(200, 1, .75, .0009, .00001, .001);
+        manip_thd.highPositionPID(200, 1, .75, .0009, .00001, .001);
+
 
 
         // park
-        dt.encoderMove(.5,2,1,false, false);
+        dt.encoderMove(.5,3,1,false, false);
 
         if (sense == 3) {
             dt.encoderMove(.5, 10, 5, true, true);

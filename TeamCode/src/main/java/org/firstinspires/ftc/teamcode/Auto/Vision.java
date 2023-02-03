@@ -34,11 +34,9 @@ public class Vision {
                     "RVjToZXr9QyAeyODi4l1KEFmGwxEoteNU8yqNbBGkPXGh/+IIm6/s/KxCJegg8qhxZDgO8110F" +
                     "RzwA5a6EltfxAMmtO0G8BB9SSkApxkcSzpyI0k2LxWof2YZG6x4H";
     public VuforiaLocalizer vuforia;
-    public Servo stop;
 
     public Vision(LinearOpMode opMode) {
         this.opMode = opMode;
-        //stop.setPosition(1);
         // variable allows image to show up on robot controller phone
         int cameraMonitorViewId = opMode.hardwareMap.appContext.getResources()
                 .getIdentifier("cameraMonitorViewId", "id",
@@ -59,7 +57,7 @@ public class Vision {
 
         // allowing the frame to only be 4 images at a time
         vuforia.setFrameQueueCapacity(1);
-        stop = opMode.hardwareMap.servo.get("stop");
+        //opMode.telemetry.addData("stop position: ",stop.getPosition());
         opMode.telemetry.addLine("Vision init");
         opMode.telemetry.update();
     }
@@ -121,7 +119,6 @@ public class Vision {
     }
 
     public int senseBlueLeft() throws InterruptedException {
-        stop.setPosition(0);
         // finger and a half/finger width away from bar
         int location = 1;
         ArrayList<Integer> elementY = new ArrayList<>();

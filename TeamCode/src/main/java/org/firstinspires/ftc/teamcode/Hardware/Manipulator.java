@@ -12,6 +12,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class Manipulator {
     public Servo wrist;
     public Servo claw;
+    public Servo stop;
+
     public LinearOpMode opMode;
     public DcMotor hArm;
     public DcMotor lArm;
@@ -27,6 +29,7 @@ public class Manipulator {
         hArm = opMode.hardwareMap.dcMotor.get("hArm");
         claw = opMode.hardwareMap.servo.get("claw");
         wrist = opMode.hardwareMap.servo.get("wrist");
+        stop = opMode.hardwareMap.servo.get("stop");
         opMode.telemetry.addLine("claw init");
 
 
@@ -59,6 +62,11 @@ public class Manipulator {
         lArm2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
+    public void setSize(double pos){
+        stop.setPosition(pos);
+        opMode.telemetry.addData("stop pos :: ", stop.getPosition());
+        opMode.telemetry.update();
+    }
     public void setClaw(double pos){
         wrist.setPosition(pos);
     }
@@ -131,6 +139,7 @@ public class Manipulator {
     }
     public void lowPositionPID (double position, double cap, double timeOut, double kP, double kI, double kD){
         ElapsedTime time = new ElapsedTime();
+        hArm.setPower(.3);
         double power;
         double p = 0;
         double i = 0;
@@ -173,6 +182,9 @@ public class Manipulator {
             opMode.telemetry.addData("encoder diff", Math.abs(Math.abs(lArm.getCurrentPosition()) - position));
             opMode.telemetry.addData("encoder", lArm.getCurrentPosition());
             opMode.telemetry.addData("power", power);
+            opMode.telemetry.addData("p :: ", p *kP);
+            opMode.telemetry.addData("i :: ", i * kI);
+            opMode.telemetry.addData("d :: ", d * kD);
             opMode.telemetry.update();
         }
         lArm.setPower(0);
@@ -185,5 +197,15 @@ public class Manipulator {
     }
     public void moveHArm(double power){
         hArm.setPower(power);
+    }
+
+    public void holdLArm(){
+        lArm.setTargetPosition(lArm.getCurrentPosition());
+        lArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
+
+    public void holdHArm(){
+        hArm.setTargetPosition(hArm.getCurrentPosition());
+        hArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 }

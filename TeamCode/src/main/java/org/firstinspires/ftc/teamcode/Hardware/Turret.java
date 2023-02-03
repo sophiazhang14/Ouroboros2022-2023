@@ -18,9 +18,10 @@ public class Turret {
 
         turret = opMode.hardwareMap.dcMotor.get("turret");
 
-        turret.setDirection(DcMotorSimple.Direction.FORWARD);
+        turret.setMode(DcMotor.RunMode.RESET_ENCODERS);
 
-        turret.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        turret.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
     }
 
     public void positionPID (double position, double cap, double timeOut, double kP, double kI, double kD) {
@@ -79,6 +80,14 @@ public class Turret {
         turret.setMode(DcMotor.RunMode.RESET_ENCODERS);
 
         turret.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    }
+
+    public void threading_hold(){
+        turret.setTargetPosition(turret.getCurrentPosition());
+        turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
+    public void moveTurret(double power){
+        turret.setPower(power);
     }
 
     public void turnPID(double goal, boolean isRight, double kP, double kI, double kD, double timeOutMS) {
